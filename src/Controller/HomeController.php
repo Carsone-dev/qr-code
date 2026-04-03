@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
 
-    #[Route('/admin_home', name: 'app_admin_home')]
+    #[Route('/admin', name: 'app_admin')]
     public function client(): Response
     {
         return $this->render('admin/dashboard/index.html.twig');

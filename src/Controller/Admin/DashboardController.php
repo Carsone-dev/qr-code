@@ -24,7 +24,7 @@ class DashboardController extends AbstractController
     ) {}
 
     // ── /admin → dashboard global ─────────────────────────────────────
-    #[Route('/admin', name: 'app_admin')]
+    #[Route('/admin_home', name: 'app_admin_home')]
     public function index(): Response
     {
         return $this->redirectToRoute('admin_dashboard_global');
