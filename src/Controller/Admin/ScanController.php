@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ScanController extends AbstractController
 {
@@ -66,7 +65,6 @@ class ScanController extends AbstractController
 
     // ── Export CSV des scans (EU-08) ──────────────────────────────────
     #[Route('/admin/analytics/qr/{id}/export-csv', name: 'admin_analytics_export_csv', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
     public function exportCsv(QrCode $qrCode, Request $request): StreamedResponse
     {
         $this->denyAccessUnlessGranted('edit', $qrCode);
