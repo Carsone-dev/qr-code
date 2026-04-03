@@ -16,6 +16,7 @@ class RegisterController extends AbstractController
     private $entityManager;
     public function __construct(EntityManagerInterface $entityManager)
     {
+        // Injection de l'EntityManager pour gérer les opérations de base de données
         $this->entityManager=$entityManager;
     }
     #[Route('/inscription', name: 'inscription')]

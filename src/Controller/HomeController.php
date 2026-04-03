@@ -16,7 +16,8 @@ class HomeController extends AbstractController
 
     #[Route('/admin', name: 'app_admin')]
     public function client(): Response
-    {
+    { 
+        // Récupérer les données pour le bilan
         return $this->render('admin/dashboard/index.html.twig');
     }
    
