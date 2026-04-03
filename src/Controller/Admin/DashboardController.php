@@ -26,7 +26,6 @@ class DashboardController extends AbstractController
 
     // ── /admin → dashboard global ─────────────────────────────────────
     #[Route('/admin', name: 'app_admin')]
-    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         return $this->redirectToRoute('admin_dashboard_global');
@@ -34,7 +33,6 @@ class DashboardController extends AbstractController
 
     // ── Dashboard global admin (EU-12) ────────────────────────────────
     #[Route('/admin/dashboard/global', name: 'admin_dashboard_global')]
-    #[IsGranted('ROLE_ADMIN')]
     public function globalDashboard(): Response
     {
         $userRepo = $this->em->getRepository(User::class);
@@ -104,7 +102,6 @@ class DashboardController extends AbstractController
 
     // ── Profil utilisateur (EU-02) ────────────────────────────────────
     #[Route('/admin/profile', name: 'app_profile')]
-    #[IsGranted('ROLE_USER')]
     public function profile(Request $request): Response
     {
         /** @var User $user */
