@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
 
+
     #[Route('/admin', name: 'app_admin')]
     public function client(): Response
     { 

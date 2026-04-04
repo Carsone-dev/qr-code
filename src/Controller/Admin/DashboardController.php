@@ -24,80 +24,80 @@ class DashboardController extends AbstractController
     ) {}
 
     // ── /admin → dashboard global ─────────────────────────────────────
-    #[Route('/admin_home', name: 'app_admin_home')]
-    public function index(): Response
-    {
-        return $this->redirectToRoute('admin_dashboard_global');
-    }
+    // #[Route('/admin_home', name: 'app_admin_home')]
+    // public function index(): Response
+    // {
+    //     return $this->redirectToRoute('admin_dashboard_global');
+    // }
 
-    // ── Dashboard global admin (EU-12) ────────────────────────────────
-    #[Route('/admin/dashboard/global', name: 'admin_dashboard_global')]
-    public function globalDashboard(): Response
-    {
-        $userRepo = $this->em->getRepository(User::class);
-        $qrRepo   = $this->em->getRepository(\App\Entity\QrCode::class);
+    // // ── Dashboard global admin (EU-12) ────────────────────────────────
+    // #[Route('/admin/dashboard/global', name: 'admin_dashboard_global')]
+    // public function globalDashboard(): Response
+    // {
+    //     $userRepo = $this->em->getRepository(User::class);
+    //     $qrRepo   = $this->em->getRepository(\App\Entity\QrCode::class);
 
-        // Compteurs
-        $totalUsers  = (int)$userRepo->count([]);
-        $activeUsers = (int)$userRepo->count(['statut' => 'actif']);
-        $totalQr     = (int)$qrRepo->count([]);
-        $activeQr    = (int)$qrRepo->count(['estActif' => true]);
+    //     // Compteurs
+    //     $totalUsers  = (int)$userRepo->count([]);
+    //     $activeUsers = (int)$userRepo->count(['statut' => 'actif']);
+    //     $totalQr     = (int)$qrRepo->count([]);
+    //     $activeQr    = (int)$qrRepo->count(['estActif' => true]);
 
-        // Scans total
-        $totalScans = (int)$this->em->createQuery(
-            'SELECT COUNT(s.id) FROM App\Entity\Scan s'
-        )->getSingleScalarResult();
+    //     // Scans total
+    //     $totalScans = (int)$this->em->createQuery(
+    //         'SELECT COUNT(s.id) FROM App\Entity\Scan s'
+    //     )->getSingleScalarResult();
 
-        // Scans aujourd'hui (comparaison par plage datetime, pas DATE())
-        $todayStart = new \DateTime('today');
-        $todayEnd   = new \DateTime('tomorrow');
-        $todayScans = (int)$this->em->createQuery(
-            'SELECT COUNT(s.id) FROM App\Entity\Scan s
-             WHERE s.dateHeure >= :start AND s.dateHeure < :end'
-        )->setParameter('start', $todayStart)
-         ->setParameter('end',   $todayEnd)
-         ->getSingleScalarResult();
+    //     // Scans aujourd'hui (comparaison par plage datetime, pas DATE())
+    //     $todayStart = new \DateTime('today');
+    //     $todayEnd   = new \DateTime('tomorrow');
+    //     $todayScans = (int)$this->em->createQuery(
+    //         'SELECT COUNT(s.id) FROM App\Entity\Scan s
+    //          WHERE s.dateHeure >= :start AND s.dateHeure < :end'
+    //     )->setParameter('start', $todayStart)
+    //      ->setParameter('end',   $todayEnd)
+    //      ->getSingleScalarResult();
 
-        // Courbe 30j — DATE_FORMAT compatible MySQL/MariaDB
-        $rows = $this->em->createQuery(
-            "SELECT FUNCTION('DATE_FORMAT', s.dateHeure, '%Y-%m-%d') as jour,
-                    COUNT(s.id) as total
-             FROM App\Entity\Scan s
-             WHERE s.dateHeure >= :from
-             GROUP BY jour
-             ORDER BY jour ASC"
-        )->setParameter('from', new \DateTime('-30 days'))
-         ->getScalarResult();
+    //     // Courbe 30j — DATE_FORMAT compatible MySQL/MariaDB
+    //     $rows = $this->em->createQuery(
+    //         "SELECT FUNCTION('DATE_FORMAT', s.dateHeure, '%Y-%m-%d') as jour,
+    //                 COUNT(s.id) as total
+    //          FROM App\Entity\Scan s
+    //          WHERE s.dateHeure >= :from
+    //          GROUP BY jour
+    //          ORDER BY jour ASC"
+    //     )->setParameter('from', new \DateTime('-30 days'))
+    //      ->getScalarResult();
 
-        $chartData = [];
-        for ($i = 29; $i >= 0; $i--) {
-            $date = (new \DateTime("-{$i} days"))->format('Y-m-d');
-            $chartData[$date] = 0;
-        }
-        foreach ($rows as $row) {
-            $chartData[$row['jour']] = (int)$row['total'];
-        }
+    //     $chartData = [];
+    //     for ($i = 29; $i >= 0; $i--) {
+    //         $date = (new \DateTime("-{$i} days"))->format('Y-m-d');
+    //         $chartData[$date] = 0;
+    //     }
+    //     foreach ($rows as $row) {
+    //         $chartData[$row['jour']] = (int)$row['total'];
+    //     }
 
-        // Derniers utilisateurs inscrits
-        $lastUsers = $userRepo->createQueryBuilder('u')
-            ->orderBy('u.id', 'DESC')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getResult();
+    //     // Derniers utilisateurs inscrits
+    //     $lastUsers = $userRepo->createQueryBuilder('u')
+    //         ->orderBy('u.id', 'DESC')
+    //         ->setMaxResults(5)
+    //         ->getQuery()
+    //         ->getResult();
 
-        // ⚠️ Rend admin/dashboard/index.html.twig (comme dans ton projet)
-        return $this->render('admin/dashboard/index.html.twig', [
-            'totalUsers'  => $totalUsers,
-            'activeUsers' => $activeUsers,
-            'totalQr'     => $totalQr,
-            'activeQr'    => $activeQr,
-            'totalScans'  => $totalScans,
-            'todayScans'  => $todayScans,
-            'labels'      => array_keys($chartData),
-            'values'      => array_values($chartData),
-            'lastUsers'   => $lastUsers,   // ← variable manquante corrigée
-        ]);
-    }
+    //     // ⚠️ Rend admin/dashboard/index.html.twig (comme dans ton projet)
+    //     return $this->render('admin/dashboard/index.html.twig', [
+    //         'totalUsers'  => $totalUsers,
+    //         'activeUsers' => $activeUsers,
+    //         'totalQr'     => $totalQr,
+    //         'activeQr'    => $activeQr,
+    //         'totalScans'  => $totalScans,
+    //         'todayScans'  => $todayScans,
+    //         'labels'      => array_keys($chartData),
+    //         'values'      => array_values($chartData),
+    //         'lastUsers'   => $lastUsers,   // ← variable manquante corrigée
+    //     ]);
+    // }
 
     // ── Profil utilisateur (EU-02) ────────────────────────────────────
     #[Route('/admin/profile', name: 'app_profile')]
