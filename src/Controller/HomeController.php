@@ -23,7 +23,7 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('connexion');
     }
 
-    #[Route('/admin', name: 'app_admin')]
+    #[Route('/admin_conex', name: 'app_admin')]
     public function client(): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
