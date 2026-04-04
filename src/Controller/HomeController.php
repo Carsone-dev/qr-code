@@ -2,24 +2,32 @@
 
 namespace App\Controller;
 
-use App\Entity\Cotisation;
-use App\Repository\CotisationRepository;
-use App\Repository\DonRepository;
-use App\service\BilanService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
+    #[Route('/', name: 'app_home')]
+    public function home(): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('connexion');
+        }
 
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('app_admin');
+        }
+
+        // Si connecté mais pas admin
+        return $this->redirectToRoute('connexion');
+    }
 
     #[Route('/admin', name: 'app_admin')]
     public function client(): Response
-    { 
-        // Récupérer les données pour le bilan
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         return $this->render('admin/dashboard/index.html.twig');
     }
-   
 }

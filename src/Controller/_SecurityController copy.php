@@ -12,34 +12,31 @@ class SecurityController extends AbstractController
     #[Route(path: '/succes-connexion', name: 'compte')]
     public function connecter(): Response
     {
+        // --apres connexion redirige vers la page d'accueil
         $user = $this->getUser();
-
         if (!$user) {
-            return $this->redirectToRoute('connexion');
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
-
-        if ($this->isGranted('ROLE_ADMIN')) {
+        $roles = $user->getRoles();
+        if ($this->isGranted("ROLE_ADMIN")){
             return $this->redirectToRoute('app_admin');
         }
+        return $this->redirectToRoute('connexion');
 
-        // Si connecté mais pas admin
-        return $this->redirectToRoute('app_home');
     }
-
     #[Route(path: '/login', name: 'connexion')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('compte');
+         if ($this->getUser()) {
+             return $this->redirectToRoute('compte');
         }
 
+        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
+        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error
-        ]);
+        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
     #[Route(path: '/deconnexion', name: 'app_logout')]
