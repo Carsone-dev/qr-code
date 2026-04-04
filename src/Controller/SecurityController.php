@@ -12,7 +12,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/succes-connexion', name: 'compte')]
     public function connecter(): Response
     {
-        // --
+        // --apres connexion redirige vers la page d'accueil
         $user = $this->getUser();
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
